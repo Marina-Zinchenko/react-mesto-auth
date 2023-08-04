@@ -25,11 +25,11 @@ function App() {
   const [cards, setInitialCards] = useState([]);
 
   const [loggedIn, setLoggedIn] = useState(false);
-  const [userData, setUserData] = useState("");
-  const [infoStatus, setInfoStatus] = useState(null);
+  const [userEmail, setUserEmail] = useState("");
+  const [infoStatus, setInfoStatus] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
 
-  let navigate = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
     Promise.all([api.getInitialInfo(), api.getInitialCards()])
@@ -38,7 +38,7 @@ function App() {
         setInitialCards(dataCard);
       })
       .catch((error) => console.error(`Ошибка в создании страницы ${error}`));
-  }, []);
+  }, [loggedIn]);
 
   function handleEditAvatarClick() {
     setEditAvatarPopupOpen(true);
@@ -70,12 +70,12 @@ function App() {
       });
   }
 
-  const handleCardDelete = (cadr) => {
+  const handleCardDelete = (card) => {
     api
-      .deleteCard(cadr._id)
+      .deleteCard(card._id)
       .then(() => {
         setInitialCards((cardItems) =>
-          cardItems.filter((cardItem) => cardItem._id !== cadr._id)
+          cardItems.filter((cardItem) => cardItem._id !== card._id)
         );
       })
       .catch((err) => {
@@ -137,9 +137,9 @@ function App() {
       return;
     }
     auth
-      .getToken(jwt)
+      .checkToken(jwt)
       .then((data) => {
-        setUserData(data.data.email);
+        setUserEmail(data.data.email);
         setLoggedIn(true);
         navigate("/");
       })
@@ -150,7 +150,7 @@ function App() {
 
   function onRegister({ email, password }) {
     auth
-      .registration(email, password)
+      .register(email, password)
       .then((data) => {
         if (data) {
           setInfoStatus(true);
@@ -158,19 +158,22 @@ function App() {
         }
       })
       .catch((err) => {
+        setInfoStatus(false);
         console.error(`При регистрации произошла ошибка: ${err}`);
       })
-      .finally(setInfoOpen(true));
+      .finally(() => {
+        setInfoOpen(true);
+      });
   }
 
   function onLogin({ email, password }) {
     auth
-      .authorization(email, password)
+      .authorize(email, password)
       .then((data) => {
         if (data.token) {
           localStorage.setItem("jwt", data.token);
           setLoggedIn(true);
-          setUserData(email);
+          setUserEmail(email);
           navigate("/");
         }
       })
@@ -185,13 +188,13 @@ function App() {
     localStorage.removeItem("jwt");
     setLoggedIn(false);
     navigate("/sign-in");
-    setUserData("");
+    setUserEmail("");
   }
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
-        <Header userEmail={userData} onExit={onExit} />
+        <Header userEmail={userEmail} onExit={onExit} />
         <Routes>
           <Route
             path="/"
@@ -215,7 +218,16 @@ function App() {
           />
           <Route path="/sign-in" element={<Login onLogin={onLogin} />} />
 
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route
+            path="*"
+            element={
+              loggedIn ? (
+                <Navigate to="/" replace />
+              ) : (
+                <Navigate to="/sign-in" replace />
+              )
+            }
+          />
         </Routes>
 
         <Footer />
@@ -248,7 +260,7 @@ function App() {
           card={selectedCard}
           isOpen={isImagePopupOpen}
           onClose={closeAllPopups}
-        ></ImagePopup>
+        />
       </div>
     </CurrentUserContext.Provider>
   );

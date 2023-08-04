@@ -1,5 +1,5 @@
-import goodregister from "../images/formgood.svg";
-import badregister from "../images/formbad.svg";
+import goodRegister from "../images/formgood.svg";
+import badRegister from "../images/formbad.svg";
 import { useEffect } from "react";
 
 function InfoTooltip({ isOpen, onClose, isSuccess }) {
@@ -34,7 +34,7 @@ function InfoTooltip({ isOpen, onClose, isSuccess }) {
         ></button>
         <img
           className="popup__info_type-img"
-          src={isSuccess ? goodregister : badregister}
+          src={isSuccess ? goodRegister : badRegister}
           alt={isSuccess ? "Успешная регистрация" : "Ошибка регистрации"}
         />
         <p className="popup__info_type-text">
