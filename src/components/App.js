@@ -3,7 +3,6 @@ import { Route, Navigate, useNavigate, Routes } from "react-router-dom";
 import Header from "./Header.jsx";
 import Main from "./Main.jsx";
 import Footer from "./Footer.jsx";
-import PopupWithForm from "./PopupWithForm.jsx";
 import EditProfilePopup from "./EditProfilePopup.jsx";
 import EditAvatarPopup from "./EditAvatarPopup.jsx";
 import AddPlacePopup from "./AddPlacePopup.jsx";
@@ -21,7 +20,6 @@ function App() {
   const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setAddPlacePopupOpen] = useState(false);
   const [isImagePopupOpen, setIsImagePopupOpen] = useState(false);
-  const [isRemovalPopupOpen, setIsRemovalPopupOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState({});
   const [currentUser, setСurrentUser] = useState({});
   const [cards, setInitialCards] = useState([]);
@@ -30,6 +28,7 @@ function App() {
   const [userData, setUserData] = useState("");
   const [infoStatus, setInfoStatus] = useState(null);
   const [infoOpen, setInfoOpen] = useState(false);
+
   let navigate = useNavigate();
 
   useEffect(() => {
@@ -124,12 +123,10 @@ function App() {
     setAddPlacePopupOpen(false);
     setEditAvatarPopupOpen(false);
     setIsImagePopupOpen(false);
-    setIsRemovalPopupOpen(false);
     setSelectedCard({});
-    setInfoStatus(false);
+    setInfoOpen(false);
   }, []);
 
-  
   useEffect(() => {
     handleTokenCheck();
   }, []);
@@ -137,7 +134,7 @@ function App() {
   const handleTokenCheck = () => {
     const jwt = localStorage.getItem("jwt");
     if (!jwt) {
-      return
+      return;
     }
     auth
       .getToken(jwt)
@@ -150,10 +147,10 @@ function App() {
         console.error(`Ошибка проверки токена: ${err}`);
       });
   };
-  
+
   function onRegister({ email, password }) {
     auth
-      .registration(email, password )
+      .registration(email, password)
       .then((data) => {
         if (data) {
           setInfoStatus(true);
@@ -168,7 +165,7 @@ function App() {
 
   function onLogin({ email, password }) {
     auth
-      .authorization( email, password )
+      .authorization(email, password)
       .then((data) => {
         if (data.token) {
           localStorage.setItem("jwt", data.token);
@@ -246,15 +243,6 @@ function App() {
           onClose={closeAllPopups}
           isSuccess={infoStatus}
         />
-
-        <PopupWithForm
-          name="removal"
-          title="Вы уверены?"
-          buttonText="Да"
-          isOpen={isRemovalPopupOpen}
-          onClose={closeAllPopups}
-          onClicDelete={handleCardDelete}
-        ></PopupWithForm>
 
         <ImagePopup
           card={selectedCard}

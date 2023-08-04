@@ -8,7 +8,7 @@
   align-items: center;
 }
 
-@media screen and (max-width: 660px) {
+@media screen and (max-width: 760px) {
   .header {
     width: calc(100% - 2*70px);
   }

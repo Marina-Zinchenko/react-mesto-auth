@@ -6,33 +6,41 @@ function Header({ onExit, userEmail }) {
     <header className="header">
       <img className="header__logo" src={logo} alt="Логотип МЕСТО" />
       <div className="header__container">
-      <Routes>
-				<Route path="/sign-in" element={
-					<NavLink to="/sign-up" className="header__link">Регистрация</NavLink>
-				}
-				/>
+        <Routes>
+          <Route
+            path="/sign-in"
+            element={
+              <NavLink to="/sign-up" className="header__link">
+                Регистрация
+              </NavLink>
+            }
+          />
 
-				<Route path="/sign-up" element={
-					<NavLink to="/sign-in" className="header__link">Войти</NavLink>
-				}
-				/>
+          <Route
+            path="/sign-up"
+            element={
+              <NavLink to="/sign-in" className="header__link">
+                Войти
+              </NavLink>
+            }
+          />
 
-				<Route
-					path="/"
-					element={
-						<div className="header__container">
-							<p className="header__email">{userEmail}</p>
-							<NavLink
-								to="/sign-in"
-								className="header__link"
-								onClick={onExit}
-							>
-								Выйти
-							</NavLink>
-						</div>
-					}
-				/>
-			</Routes>
+          <Route
+            path="/"
+            element={
+              <nav className="header__container">
+                <p className="header__email">{userEmail}</p>
+                <NavLink
+                  to="/sign-in"
+                  className="header__link"
+                  onClick={onExit}
+                >
+                  Выйти
+                </NavLink>
+              </nav>
+            }
+          />
+        </Routes>
       </div>
     </header>
   );

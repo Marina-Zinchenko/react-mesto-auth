@@ -17,7 +17,7 @@
   opacity: 0.8;
 }
 
-@media screen and (max-width:600px) {
+@media screen and (max-width:760px) {
   .register__button {
     width: 238px;
     min-height: 46px;
