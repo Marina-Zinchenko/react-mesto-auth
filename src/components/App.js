@@ -32,12 +32,14 @@ function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    Promise.all([api.getInitialInfo(), api.getInitialCards()])
-      .then(([dataUser, dataCard]) => {
-        setСurrentUser(dataUser);
-        setInitialCards(dataCard);
-      })
-      .catch((error) => console.error(`Ошибка в создании страницы ${error}`));
+    if (loggedIn) {
+      Promise.all([api.getInitialInfo(), api.getInitialCards()])
+        .then(([dataUser, dataCard]) => {
+          setСurrentUser(dataUser);
+          setInitialCards(dataCard);
+        })
+        .catch((error) => console.error(`Ошибка в создании страницы ${error}`));
+    }
   }, [loggedIn]);
 
   function handleEditAvatarClick() {
